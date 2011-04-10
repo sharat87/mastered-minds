@@ -1,14 +1,30 @@
 R = Raphael
 
-BUBBLE_RADIUS = 20
+PIT_RADIUS = 20
 POPUP_WIDTH = 100
 POPUP_HEIGHT = 100
 
-tries = 9
+tries = 10
 guessLength = 4
-choices = 7
+choices = 10
 
-colors = [
+PEGS =
+
+    yellow: 0
+    red: 1
+    blue: 2
+    white: 3
+    black: 4
+    green: 5
+    orange: 6
+    violet: 7
+    cyan: 8
+    purple: 9
+
+    none: 10
+    active: 11
+
+PEG_COLORS = [
     '#DEA83D'
     '#9A1821'
     '#1964BE'
@@ -19,69 +35,102 @@ colors = [
     '#7540AA'
     '#009C9C'
     '#BC5ABC'
+    '#DDD'
+    '#88D'
 ]
+
+class Director
+
+    constructor: (@length, @spaceSize) ->
+        @guess = ''
+
+        while @guess.length isnt @length
+            n = Math.floor(Math.random() * @spaceSize).toString()
+            if @guess.indexOf(n) isnt -1
+                continue
+            @guess += n
+
+    match: (mstr) ->
+
+        console.info 'match with', mstr
+
+        out =
+            present: 0
+            exact: 0
+
+        for i in [0...mstr.length]
+
+            c = mstr[i]
+
+            if @guess[i] is c
+                ++out.exact
+            else if @guess.indexOf(c) isnt -1
+                ++out.present
+
+        out
+
 
 class Board
 
     constructor: (@root, @rows, @cols) ->
         console.info 'constructing O_o board'
 
-        @paper = R root, 200 + guessLength * 2 * BUBBLE_RADIUS, tries * 2 * BUBBLE_RADIUS
+        @director = new Director @cols, choices
+        console.info 'guess', @director.guess
+
+        @paper = R root, 200 + guessLength * 2 * PIT_RADIUS, tries * 2 * PIT_RADIUS
 
         @tries = @rows
 
         @round = 0
 
-        @bubbles = {}
+        @pits = {}
+        @pitRows = []
         @pegs = []
 
         gap = 20
-        rad = BUBBLE_RADIUS
+        rad = PIT_RADIUS
         pad = 2 + 2 * rad + gap
 
         for row in [0...@rows]
 
-            @bubbles[row] = {}
+            # @pits[row] = {}
 
-            for col in [0...@cols]
-                # b = R.placeBubble pad + rad + 2 * rad * col, rad + 2 * rad * row, rad - 2
-                b = new Bubble @paper, pad + rad + 2 * rad * col, rad + 2 * rad * row, rad - 2
+            r = new Row this, @cols, pad, 2 * rad * row, rad
+            @pitRows.push r
 
-                # $(b.node).data('r', b).attr
-                #     'data-row': row
-                #     'data-col': col
+            # for col in [0...@cols]
+            #     b = new Pit @paper, pad + rad + 2 * rad * col, rad + 2 * rad * row, rad - 2
+            #     @pits[row][col] = b
 
-                @bubbles[row][col] = b
-
-                # if row is @rows - 1
-                #     GameContext.dropTargets.push b
-
-            new Checker @paper, pad + gap + rad + 2 * rad * col, rad + 2 * rad * row
+            # new Checker @paper, pad + gap + rad + 2 * rad * col, rad + 2 * rad * row
 
         for row in [0...choices]
 
             p = new Peg this, rad + 2, rad + 2 * rad * row, rad - 2
-            p.setColor colors[row]
+            p.setState row
+            # p.setColor PEG_COLORS[row]
 
             @pegs.push p
 
         @setRound()
 
     setRound: (r=@round) ->
-        @dropTargets = []
-
-        for col, bubble of @bubbles[@tries - r - 1]
-            bubble.setColor '#888'
-            @dropTargets.push bubble
+        @round = r
+        @activePitRow = @pitRows[tries - r - 1]
+        @activePitRow.setActive()
 
 
-class Bubble
+class Pit
 
     constructor: (@paper, x, y, r) ->
         @elem = @paper.circle x, y, r
 
+        @isEmpty = yes
+
+        @setColor PEGS.none
+
         @elem.attr
-            fill: '#DDD'
             stroke: null
 
         @elem.hover ((e) -> @attr 'stroke-opacity', 1), ((e) -> @attr 'stroke-opacity', 0)
@@ -92,8 +141,40 @@ class Bubble
             @elem.attr
                 fill: 'white'
 
-    setColor: (color) ->
-        @elem.attr 'fill', color
+    setColor: (@state) ->
+        @elem.attr 'fill', PEG_COLORS[@state]
+
+
+class Row
+
+    constructor: (@board, @cols, x, y, rad) ->
+        @paper = @board.paper
+
+        gap = 20
+        @pits = []
+
+        for col in [0...@cols]
+            b = new Pit @paper, x + rad + 2 * rad * col, y + rad, rad - 2
+            @pits.push b
+
+        @checker = new Checker @board, x + gap + rad + 2 * rad * col, y + rad
+
+    setActive: ->
+        for b in @pits
+            b.setColor PEGS.active
+
+    updateCheckBtn: ->
+        for pit in @pits
+            if pit.isEmpty
+                return
+
+        @checker.showCheckBtn()
+
+    match: ->
+        matchResult = @board.director.match((pit.state for pit in @pits).join(''))
+        @checker.display matchResult
+
+        @board.setRound(@board.round + 1)
 
 
 class Peg
@@ -106,11 +187,18 @@ class Peg
         @elem.attr
             stroke: null
 
-        self = this
-        @elem.drag ((dx, dy) -> self.move this, dx, dy), (-> self.start this), (-> self.finish this)
+        @setState PEGS.none
+        @movable()
+
+    setState: (@state) ->
+        @elem.attr 'fill', PEG_COLORS[@state]
 
     setColor: (color) ->
         @elem.attr 'fill', color
+
+    movable: (e=@elem) ->
+        self = this
+        e.drag ((dx, dy) -> self.move this, dx, dy), (-> self.start this), (-> self.finish this)
 
     start: (de) ->
 
@@ -119,10 +207,10 @@ class Peg
         de.oy = de.attr 'cy'
 
         # Put a clone in its place
-        cl = de.clone()
-        cl.attr cx: de.ox, cy: de.oy
-        mkPeg cl
-        cl.insertAfter de
+        @clone = de.clone()
+        @clone.attr cx: de.ox, cy: de.oy
+        @movable @clone
+        @clone.insertAfter de
 
         # Bring it to front
         de.toFront()
@@ -136,10 +224,10 @@ class Peg
             elem: null
             area: 0
 
-        for target in @board.dropTargets
+        for targetPit in @board.activePitRow.pits
 
             box1 = de.getBBox()
-            box2 = target.elem.getBBox()
+            box2 = targetPit.elem.getBBox()
 
             # Check if a corner of box1 lies inside box2
             # Starting with top-left corner, clockwise
@@ -174,30 +262,79 @@ class Peg
 
                 if area > maxOverlapElem.area
                     maxOverlapElem =
-                        target: target
+                        targetPit: targetPit
                         area: area
 
-        if maxOverlapElem.area > 80 and maxOverlapElem.target?
-            de.placeTarget = maxOverlapElem.target
+        if maxOverlapElem.area > 80 and maxOverlapElem.targetPit?
+            de.placeTarget = maxOverlapElem.targetPit
 
     finish: (de) ->
 
-        de.placeTarget?.elem.attr
-            fill: de.attr 'fill'
+        de.placeTarget?.setColor @state
+
+        de.placeTarget?.isEmpty = no
 
         de.remove()
+
+        @board.activePitRow.updateCheckBtn()
+        @elem = @clone
+        @clone = null
 
 
 class Checker
 
-    constructor: (@paper, x, y) ->
+    constructor: (@board, @x, @y) ->
+        @paper = @board.paper
+        @dead = no
+
+        @indicators = []
+
         irad = 5
         for dx in [-1, 1]
             for dy in [-1, 1]
-                c = @paper.circle x + dx * (irad + 2), y + dy * (irad + 2), irad
+                c = @paper.circle @x + dx * (irad + 2), @y + dy * (irad + 2), irad
+                @indicators.push c
                 c.attr
                     fill: '#BBB'
                     stroke: null
+
+    showCheckBtn: ->
+
+        width = 60
+        height = 22
+
+        console.info 'adding the button'
+
+        # btn = @paper.rect @x - (width/2), @y - (height/2), width, height, 4
+        # btn.attr
+        #     fill: 'blue'
+
+        @matchBtn = $('<a href="#" class="check-btn" style="position: absolute;">Check</a>').appendTo('#gameBox')
+            .click(=> @board.activePitRow.match()).offset(top: @y, left: @x)
+
+        # t = @paper.text @x, @y, 'Check', @paper.getFont('Inconsolata'), 14
+        # t.attr
+        #     'text-color': 'white'
+
+    display: (matchResult) ->
+        j = 0
+
+        i = 0
+        while i < matchResult.exact
+            @indicators[j].attr
+                fill: 'black'
+            ++i
+            ++j
+
+        i = 0
+        while i < matchResult.present
+            @indicators[j].attr
+                fill: 'white'
+            ++i
+            ++j
+
+        @matchBtn.remove()
+        @dead = yes
 
 
 new Board 'gameBox', tries, guessLength
