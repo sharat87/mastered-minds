@@ -267,6 +267,8 @@ class Peg
 
         if maxOverlapElem.area > 80 and maxOverlapElem.targetPit?
             de.placeTarget = maxOverlapElem.targetPit
+        else
+            de.placeTarget = null
 
     finish: (de) ->
 
