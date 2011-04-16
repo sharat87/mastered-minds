@@ -1,0 +1,31 @@
+html {
+    height: 100%;
+}
+
+body {
+    background: url(../res/background.png) repeat;
+    -webkit-box-shadow: 0 0 100px rgba(0, 0, 0, .4) inset;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@font-face {
+    font-family: Gentium;
+    src: url("GenBasR.ttf");
+}
+
+@font-face {
+    font-family: Yanone Kaffeesatz;
+    src: url("YanoneKaffeesatz-Regular.ttf");
+}
+
+@font-face {
+    font-family: Copse;
+    src: url("Copse-Regular.ttf");
+}
+
+#controlBox {
+    font-family: Gentium;
+    font-size: 1.2em;
+}

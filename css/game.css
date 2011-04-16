@@ -1,0 +1,304 @@
+#container {
+    width: 520px;
+    margin: 0 auto;
+    padding: 12px;
+    text-align: center;
+}
+
+#controlBox {
+    margin: 12px 10px;
+    cursor: default;
+    opacity: .4
+}
+
+#controlBox:hover {
+    opacity: 1;
+}
+
+#controlBox .control-btn,
+#newGameForm div.form-controls button {
+    background-color: white;
+    background-image: -webkit-gradient(linear, center top, center bottom,
+            from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, .2)));
+    color: #222;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    padding: 6px 18px;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: default;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .2) inset;
+    border: none;
+    display: inline-block;
+}
+
+#controlBox .control-btn + .control-btn {
+    margin-left: 6px;
+}
+
+#controlBox .control-btn:active,
+#newGameForm div.form-controls button:active {
+    background-color: #999;
+    -webkit-transform: translateY(1px);
+    -webkit-box-shadow: 0 1px 15px rgba(0, 0, 0, .4) inset;
+}
+
+#gameBox {
+    display: inline-block;
+    margin: 4px 0;
+}
+
+#pegBox {
+    float: left;
+}
+
+#boardBox {
+    margin-left: 28px;
+    float: left;
+}
+
+#boardBox div.indicator {
+    margin-left: 15px;
+    display: inline-block;
+    vertical-align: 12px;
+    position: relative;
+}
+
+div.pebble {
+    width: 8px;
+    height: 10px;
+    margin-right: 3px;
+    display: inline-block;
+    border-radius: 8px;
+    background: #666;
+    -webkit-box-shadow: 1px 1px 2px #333 inset;
+}
+
+div.pebble.present {
+    background-color: white;
+    background-image: -webkit-gradient(linear, 40% top, 60% bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, .5)));
+    -webkit-box-shadow: none;
+}
+
+div.pebble.exact {
+    background-color: black;
+    background-image: -webkit-gradient(linear, 40% top, 60% bottom,
+            from(rgba(255, 255, 255, .1)), to(rgba(255, 255, 255, 0)));
+    -webkit-box-shadow: none;
+}
+
+.check-btn {
+    background-color: #111;
+    box-shadow: inset rgba(200, 200, 200, 0.3) 0 0.3em .3em,
+            inset rgba(200, 200, 200, .15) 0 -0.1em .3em; /* inner shadow */
+    background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0,
+            from( rgba(255, 255, 255, 0) ), to( rgba(255, 255, 255, 0.5) ));
+    color: white;
+    border: thin solid #777;
+    border-radius: .5em / 1em;
+    padding: 2px 8px;
+    text-decoration: none;
+    position: absolute;
+    cursor: default;
+    display: none;
+    top: 0;
+}
+
+.check-btn:active {
+    box-shadow: inset rgba(200, 200, 200, 0.1) 0 0.3em .3em,
+            inset rgba(200, 200, 200, .15) 0 -0.1em .3em; /* inner shadow */
+    background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0,
+            from( rgba(255, 255, 255, 0) ), to( rgba(255, 255, 255, 0.2) ));
+    border-color: #222;
+}
+
+div.indicator.allow-check .check-btn {
+    display: block;
+}
+
+div.peg-wrap, div.peg {
+    width: 36px;
+    height: 36px;
+}
+
+div.peg, span.peg-sample {
+    background-image: -webkit-gradient(linear,
+            40% top, 60% bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, .35)));
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset;
+}
+
+div.peg {
+    -webkit-border-radius: 18px;
+    z-index: 1000;
+    -webkit-transition: -webkit-transform .01s ease-in-out, -webkit-box-shadow .2s ease-in;
+}
+
+span.peg-sample {
+    display: inline-block;
+    -webkit-border-radius: 9px;
+    width: 18px;
+    height: 18px;
+    margin-left: -8px;
+    opacity: .2;
+}
+
+span.peg-sample.on {
+    opacity: 1;
+}
+
+div.peg-wrap + div.peg-wrap {
+    margin-top: 3px;
+}
+
+div.peg.dragging {
+    -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, .8);
+    -webkit-transform: scale(1.1);
+    -webkit-border-radius: 25px;
+    z-index: 2000;
+}
+
+div.slot {
+    display: inline-block;
+}
+
+div.slot + div.slot {
+    margin-left: 3px;
+}
+
+div.empty.peg {
+    background-color: #444;
+    -webkit-box-shadow: 1px 1px 2px #222 inset;
+    background-image: -webkit-gradient(linear,
+            center bottom, center top, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, .1)));
+    z-index: 500;
+}
+
+div.empty.peg.go-behind {
+    position: absolute;
+}
+
+.yellow {
+    background-color: #DEA83D;
+}
+
+.red {
+    background-color: #9A1821;
+}
+
+.blue {
+    background-color: #1964BE;
+}
+
+.white {
+    background-color: #DDDDDD;
+}
+
+.black {
+    background-color: #222;
+}
+
+.green {
+    background-color: #4EA41D;
+}
+
+.orange {
+    background-color: #D05E00;
+}
+
+.violet {
+    background-color: #7540AA;
+}
+
+.cyan {
+    background-color: #009C9C;
+}
+
+.purple {
+    background-color: #BC5ABC;
+}
+
+div.slot.peg-hover div.peg,
+div.empty.peg.peg-hover {
+    background: #FFFA84;
+    -webkit-box-shadow: 0 0 18px rgba(0, 0, 0, .8) inset;
+}
+
+div.slot-row {
+    opacity: .3;
+    -webkit-transition: opacity .4s ease-out;
+}
+
+div.slot-row.active, div.slot-row.finished {
+    opacity: 1;
+}
+
+#newGameDialog {
+    position: fixed;
+    top: 0;
+    z-index: 9000;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+}
+
+#newGameForm {
+    display: block;
+    margin: 0 auto;
+    padding: 20px 20px;
+    text-align: center;
+    width: 40%;
+    min-width: 600px;
+    background-color: #AAA;
+    -webkit-box-shadow: 0 2px 20px rgba(0, 0, 0, .7);
+    -webkit-border-radius: 0 0 2px 2px;
+    left: auto;
+    right: auto;
+}
+
+#newGameForm label {
+    display: inline-block;
+    margin: 0 8px;
+    vertical-align: middle;
+}
+
+#newGameForm span.title {
+    display: block;
+    text-align: left;
+    margin-bottom: 3px;
+}
+
+#newGameForm div.form-controls {
+    margin-top: 14px;
+}
+
+#newGameForm span.slots-input {
+    background-color: blue;
+    border-radius: 3px;
+    color: white;
+    display: block;
+}
+
+#newGameForm span.slot-option {
+    padding: 2px 8px;
+    display: inline-block;
+}
+
+#newGameForm span.slot-option.selected {
+    background-color: orange;
+}
+
+#showcaseBox {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+#showcaseBox div.peg {
+    display: inline-block;
+    margin-left: 3px;
+    font-family: Copse;
+    overflow: hidden;
+    line-height: 36px;
+    font-size: 22px;
+    color: #AAA;
+    cursor: default;
+}
