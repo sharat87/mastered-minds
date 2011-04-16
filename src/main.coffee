@@ -54,6 +54,10 @@ class Director
 
         console.info 'match with', mstr
 
+        if mstr is @guess
+            alert "You won!\n#{@guess}"
+            { present: 0, exact: @guess.length }
+
         out =
             present: 0
             exact: 0
