@@ -49,23 +49,28 @@ def watch():
         'styles/*.less',
     ]
 
-    files_to_watch = []
-    for g in globs_to_watch:
-        files_to_watch.extend(glob(g))
-
     chrome()
 
     mtimes = {}
 
-    for f in files_to_watch:
-        mtimes[f] = os.stat(f).st_mtime
+    for g in globs_to_watch:
+        for f in glob(g):
+            mtimes[f] = os.stat(f).st_mtime
 
     while True:
-        for f in files_to_watch:
-            mt = os.stat(f).st_mtime
-            if mt != mtimes[f]:
-                build()
-                mtimes[f] = mt
+
+        for f, old_time in mtimes.items():
+
+            # The file may be reported as non-existent for a very brief
+            # period of time sometimes
+            if not os.path.exists(f):
+                continue
+
+            new_time = os.stat(f).st_mtime
+
+            if new_time != old_time:
+                build(f)
+                mtimes[f] = new_time
 
         time.sleep(.2)
 
