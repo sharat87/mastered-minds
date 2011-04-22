@@ -53,8 +53,7 @@ def watch():
     for g in globs_to_watch:
         files_to_watch.extend(glob(g))
 
-    clean()
-    static()
+    chrome()
 
     mtimes = {}
 
