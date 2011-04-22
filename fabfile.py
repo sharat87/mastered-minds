@@ -16,7 +16,7 @@ def static():
     local('cp -R vendor chrome-app')
     local('cp -R res chrome-app')
 
-def build():
+def build(f=None):
 
     local('mkdir -p chrome-app/js')
     for f in glob('src/*.coffee'):
@@ -25,6 +25,8 @@ def build():
     local('mkdir -p chrome-app/css')
     for f in glob('styles/*.less'):
         lessc(f, os.path.split(f.replace('.less', '.css'))[1])
+
+    local('cp *.html chrome-app')
 
 def chrome():
 
@@ -45,6 +47,7 @@ def watch():
 
     globs_to_watch = [
         'manifest.json',
+        '*.html',
         'src/*.coffee',
         'styles/*.less',
     ]
