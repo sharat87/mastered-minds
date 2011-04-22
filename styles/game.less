@@ -8,11 +8,12 @@
 #controlBox {
     margin: 12px 10px;
     cursor: default;
-    opacity: .4
-}
+    opacity: .4;
 
-#controlBox:hover {
-    opacity: 1;
+    &:hover {
+        opacity: 1;
+    }
+
 }
 
 #controlBox .control-btn,
@@ -91,7 +92,7 @@ div.pebble.exact {
     box-shadow: inset rgba(200, 200, 200, 0.3) 0 0.3em .3em,
             inset rgba(200, 200, 200, .15) 0 -0.1em .3em; /* inner shadow */
     background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0,
-            from( rgba(255, 255, 255, 0) ), to( rgba(255, 255, 255, 0.5) ));
+            from(rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.5)));
     color: white;
     border: thin solid #777;
     border-radius: .5em / 1em;
@@ -107,7 +108,7 @@ div.pebble.exact {
     box-shadow: inset rgba(200, 200, 200, 0.1) 0 0.3em .3em,
             inset rgba(200, 200, 200, .15) 0 -0.1em .3em; /* inner shadow */
     background-image: -webkit-gradient(radial, 50% 0, 100, 50% 0, 0,
-            from( rgba(255, 255, 255, 0) ), to( rgba(255, 255, 255, 0.2) ));
+            from(rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.2)));
     border-color: #222;
 }
 
@@ -301,4 +302,9 @@ div.slot-row.active, div.slot-row.finished {
     font-size: 22px;
     color: #AAA;
     cursor: default;
+}
+
+#showcaseBox .repeat-status {
+    color: white;
+    margin-left: 4px;
 }

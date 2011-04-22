@@ -1,2 +1,4 @@
 syntax: glob
-js
+chrome-app
+mminds.zip
+fabfile.pyc

@@ -1,6 +1,5 @@
 "use strict"
 
-R = Raphael
 $ = jQuery
 
 PIT_RADIUS = 20
@@ -66,6 +65,7 @@ $.fn.newGame = (game) ->
 
     showcaseMarkup = """
     #{('<div class="empty peg">?</div>' for i in [1..game.guessLength]).join ''}
+    <span class=repeat-status>Repeat #{if game.repeat then 'on' else 'off'}
     """
 
     slotMarkup = """
@@ -231,6 +231,7 @@ $.fn.newGame = (game) ->
 
         if match.exact is guess.getLength()
             alert 'finished game!'
+            openShowCase()
             return
 
         if round.getValue() is game.trials - 1
