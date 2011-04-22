@@ -1,6 +1,7 @@
 gameBox = $ '#gameBox'
 
 newGameDialog = $ '#newGameDialog'
+aboutBoxContainer = $ '#aboutBoxContainer'
 
 newGameDialog.delegate 'span.peg-sample', 'click', (e) ->
     th = $ this
@@ -75,5 +76,12 @@ controllers =
         if confirm 'Are you sure to restart this game?'
             gameBox.newGame $.extend { guess: gameBox.data('guess').getValue() }, gameBox.data('game')
 
+    about: (e) ->
+        aboutBoxContainer.fadeIn('fast')
+
 $('#controlBox').delegate '.control-btn', 'click', (e) ->
     controllers[$(this).data('action')].call(this, e)
+
+aboutBoxContainer.click (e) ->
+    return unless e.target is this
+    aboutBoxContainer.fadeOut('fast')
