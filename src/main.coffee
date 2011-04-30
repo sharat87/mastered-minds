@@ -291,8 +291,24 @@ $.fn.newGame = (game) ->
 
     gameBox.data { game, guess, openShowCase }
 
-$('#gameBox').newGame
+defaultGame =
     trials: 10
     guessLength: 4
     choices: 6
     repeat: no
+
+@startNewGame = (game) ->
+
+    unless game?
+        if localStorage.lastGame?
+            try
+                game = JSON.parse(localStorage.lastGame)
+            catch err
+                game = defaultGame
+        else
+            game = defaultGame
+
+    $('#gameBox').newGame game
+    localStorage.lastGame = JSON.stringify game
+
+startNewGame()

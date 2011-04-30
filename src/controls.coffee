@@ -36,7 +36,7 @@ $('#newGameOkBtn').click (e) ->
 
     console.info 'starting game', game
 
-    gameBox.newGame game
+    startNewGame game
 
 $('#newGameCancelBtn').click (e) ->
     newGameForm.slideUp 'fast', ->
@@ -60,7 +60,7 @@ controllers =
         else
             newGameDialog.find('input.repeat').removeAttr('checked')
 
-        # gameBox.newGame
+        # startNewGame
         #     trials: 10
         #     guessLength: 4
         #     choices: 10
@@ -74,7 +74,7 @@ controllers =
 
     restart: (e) ->
         if confirm 'Are you sure to restart this game?'
-            gameBox.newGame $.extend { guess: gameBox.data('guess').getValue() }, gameBox.data('game')
+            startNewGame $.extend { guess: gameBox.data('guess').getValue() }, gameBox.data('game')
 
     about: (e) ->
         aboutBoxContainer.fadeIn('fast')
