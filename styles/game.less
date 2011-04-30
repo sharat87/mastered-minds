@@ -8,10 +8,18 @@
 #controlBox {
     margin: 12px 10px;
     cursor: default;
-    opacity: .4;
 
-    &:hover {
+    button {
+        opacity: .4;
+    }
+
+    &:hover button {
+        opacity: .6;
+    }
+
+    button:focus, button:hover {
         opacity: 1;
+        outline: none;
     }
 
 }
