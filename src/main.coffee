@@ -297,7 +297,7 @@ defaultGame =
     choices: 6
     repeat: no
 
-@startNewGame = (game) ->
+do @startNewGame = (game) ->
 
     unless game?
         if localStorage.lastGame?
@@ -310,5 +310,3 @@ defaultGame =
 
     $('#gameBox').newGame game
     localStorage.lastGame = JSON.stringify game
-
-startNewGame()
