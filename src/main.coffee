@@ -153,8 +153,8 @@ $.fn.newGame = (game) ->
             if peg.parent().is('.peg-wrap')
                 clonedPeg = peg.parent().clone()
                 clonedPeg.find('div.peg').mkPeg().removeClass('dragging ui-draggable-dragging')
-                    .css(width: 0, height: 0, top: 18, left: 18)
-                    .animate({ width: 36, height: 36, 'slow', top: 0, left: 0 }, 'fast')
+                    .css(width: 0, height: 0, top: 21, left: 21)
+                    .animate({ width: 42, height: 42, 'slow', top: 0, left: 0 }, 'fast')
                 peg.parent().after clonedPeg
 
             emptyPeg = slot.find('div.empty.peg').addClass('go-behind')
