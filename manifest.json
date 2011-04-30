@@ -1,7 +1,7 @@
 {
     "name": "Mastered Minds",
     "version": "1.0",
-    "description": "A mastermind clone",
+    "description": "A tasty mastermind clone",
     "app": {
         "launch": {
             "local_path": "index.html"
