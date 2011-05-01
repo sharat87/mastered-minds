@@ -6,49 +6,17 @@ PIT_RADIUS = 20
 POPUP_WIDTH = 100
 POPUP_HEIGHT = 100
 
-PEGS =
-
-    yellow: 0
-    red: 1
-    blue: 2
-    white: 3
-    black: 4
-    green: 5
-    orange: 6
-    violet: 7
-    cyan: 8
-    purple: 9
-
-    none: 10
-    active: 11
-
-PEG_COLORS = [
-    '#DEA83D'
-    '#9A1821'
-    '#1964BE'
-    '#DDDDDD'
-    '#3D3D3D'
-    '#4EA41D'
-    '#D05E00'
-    '#7540AA'
-    '#009C9C'
-    '#BC5ABC'
-    '#DDD'
-    '#88D'
-]
-
-colornames = [
-    'yellow'
-    'red'
-    'blue'
-    'white'
-    'black'
-    'green'
-    'orange'
-    'violet'
-    'cyan'
-    'purple'
-]
+COLORNAMES =
+    a: 'yellow'
+    b: 'red'
+    c: 'blue'
+    d: 'white'
+    e: 'black'
+    f: 'green'
+    g: 'orange'
+    h: 'violet'
+    i: 'cyan'
+    j: 'purple'
 
 $('body').delegate 'a[href=#]', 'click', (e) ->
     e.preventDefault()
@@ -59,7 +27,7 @@ $.fn.newGame = (game) ->
 
     pegBoxMarkup = """
     <div id=pegBox>
-        #{("<div class=\"peg-wrap\"><div data-val=\"#{String.fromCharCode 97 + i}\" class=\"#{colornames[i]} peg\"/></div>" for i in [0...game.choices]).join ''}
+        #{("<div class=\"peg-wrap\"><div data-val=\"#{c}\" class=\"#{color} peg\"/></div>" for c, color of COLORNAMES)[0...game.choices].join ''}
     </div>
     """
 
@@ -82,7 +50,7 @@ $.fn.newGame = (game) ->
     indicatorMarkup = """
     <div class="indicator">
         #{(pebbleMarkup for i in [1..game.guessLength]).join ''}
-        <a href="#" class=check-btn>Check</a>
+        <button class=check-btn>Check</button>
     </div>
     """
 
@@ -187,8 +155,8 @@ $.fn.newGame = (game) ->
         activate = ->
             slotRow = getSlotRow().addClass('active')
             slotRow.find('div.slot').mkSlot()
-            console.info slotRow.siblings('.active').removeClass('active')
-                .find('div.slot').droppable('option', 'scope', 'pegs-fin').droppable('option', 'scope')
+            slotRow.siblings('.active').removeClass('active')
+                # .find('div.slot').droppable('option', 'scope', 'pegs-fin').droppable('option', 'scope')
 
         inc = ->
             ++value
@@ -219,8 +187,6 @@ $.fn.newGame = (game) ->
         matchStr = chosenPegs.map(-> $(this).data 'val').toArray().join ''
         match = guess.match matchStr
 
-        console.info 'You guessed', matchStr, guess.match(matchStr)
-
         pebbles = slotRow.find('div.pebble')
 
         pebbles.slice(0, match.exact).addClass('exact')
@@ -230,16 +196,20 @@ $.fn.newGame = (game) ->
         slotRow.remove()
 
         if match.exact is guess.getLength()
-            alert 'finished game!'
+            $('#msg').html('Game finished. Click <b>New game</b> to play again.').addClass('finished')
             openShowCase()
-            return
-
-        if round.getValue() is game.trials - 1
-            alert 'Oops! Better luck next time'
+        else if round.getValue() is game.trials - 1
+            $('#msg').html('Oops! Better luck next time. Click <b>New game</b> to play again.').addClass('lost')
             openShowCase()
-            return
+        else
+            round.inc()
 
-        round.inc()
+        # Collect and save the game's progress
+        allGuesses = gameBox.find('div.slot-row.finished').map(->
+            guessStr = $(this).find('div.peg:not(.empty)').map(-> $(this).data('val')).toArray().join ''
+        ).toArray()
+
+        localStorage.lastGameGuesses = JSON.stringify allGuesses
 
     guess = do ->
 
@@ -253,11 +223,7 @@ $.fn.newGame = (game) ->
                 if game.repeat or c not in value
                     value += c
 
-        console.info 'Try and guess', value
-
         match = (mstr) ->
-
-            console.info 'match with', mstr
 
             out =
                 present: 0
@@ -289,6 +255,28 @@ $.fn.newGame = (game) ->
         for c in guess.getValue()
             showcaseBox.find('div.empty.peg:first').replaceWith pegBox.find("div.peg[data-val=#{c}]").clone()
 
+    do ->
+        return unless localStorage.lastGameGuesses?
+
+        try
+            lastGameGuesses = JSON.parse localStorage.lastGameGuesses
+        catch err
+            return
+
+        slotRows = gameBox.find 'div.slot-row'
+
+        activeRowIndex = slotRows.length - lastGameGuesses.length
+        # slotRows.eq(activeRowIndex).addClass 'active'
+
+        for g, i in lastGameGuesses
+            row = gameBox.find("div.slot-row:eq(#{i + activeRowIndex})")
+
+            row.find('div.empty.peg').each (j) ->
+                $(this).addClass('go-behind').after """<div data-val=#{g[j]} class="#{COLORNAMES[g[j]]} peg"
+                    style="position:relative;left:auto;top:auto"></div>"""
+
+            row.find('.check-btn').click()
+
     gameBox.data { game, guess, openShowCase }
 
 defaultGame =
@@ -299,7 +287,9 @@ defaultGame =
 
 do @startNewGame = (game) ->
 
-    unless game?
+    if game?
+        localStorage.clear()
+    else
         if localStorage.lastGame?
             try
                 game = JSON.parse(localStorage.lastGame)
@@ -308,5 +298,8 @@ do @startNewGame = (game) ->
         else
             game = defaultGame
 
-    $('#gameBox').newGame game
+    gameBox = $ '#gameBox'
+    gameBox.newGame game
+    game.guess = gameBox.data('guess').getValue()
+
     localStorage.lastGame = JSON.stringify game
