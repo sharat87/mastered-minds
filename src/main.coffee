@@ -24,6 +24,7 @@ $('body').delegate 'a[href=#]', 'click', (e) ->
 $.fn.newGame = (game) ->
     gameBox = $ this
     gameBox.empty()
+    $('#msg').removeClass('finished lost')
 
     pegBoxMarkup = """
     <div id=pegBox>
