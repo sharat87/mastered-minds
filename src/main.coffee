@@ -234,14 +234,18 @@ $.fn.newGame = (game) ->
                 out.exact = value.length
                 return out
 
-            for i in [0...mstr.length]
+            for i in [0...value.length]
 
-                c = mstr[i]
+                c = value[i]
 
-                if value[i] is c
+                if mstr[i] is c
                     ++out.exact
-                else if value.indexOf(c) isnt -1
-                    ++out.present
+                else
+                    pos = mstr.indexOf c
+                    if pos isnt -1
+                        mstr[pos] = 'x'
+                        mstr = mstr.substring(0, pos) + '_' + mstr.substring(pos + 1)
+                        ++out.present
 
             out
 
