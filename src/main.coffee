@@ -1,5 +1,8 @@
 "use strict"
 
+String.prototype.splice = (start, count, stuff) ->
+    @substring(0, start) + stuff + @substring(start + count)
+
 $ = jQuery
 
 PIT_RADIUS = 20
@@ -240,11 +243,11 @@ $.fn.newGame = (game) ->
 
                 if mstr[i] is c
                     ++out.exact
+                    mstr = mstr.splice i, 1, '_'
                 else
                     pos = mstr.indexOf c
                     if pos isnt -1
-                        mstr[pos] = 'x'
-                        mstr = mstr.substring(0, pos) + '_' + mstr.substring(pos + 1)
+                        mstr = mstr.splice i, 1, '_'
                         ++out.present
 
             out
