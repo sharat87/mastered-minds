@@ -247,7 +247,7 @@ $.fn.newGame = (game) ->
                 else
                     pos = mstr.indexOf c
                     if pos isnt -1
-                        mstr = mstr.splice i, 1, '_'
+                        mstr = mstr.splice pos, 1, '_'
                         ++out.present
 
             out
