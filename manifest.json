@@ -1,6 +1,6 @@
 {
     "name": "Mastered Minds",
-    "version": "1.3",
+    "version": "1.5",
     "description": "A tasty mastermind clone",
     "app": {
         "launch": {

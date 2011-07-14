@@ -238,17 +238,21 @@ $.fn.newGame = (game) ->
                 return out
 
             for i in [0...value.length]
+                if mstr[i] is value[i]
+                    ++out.exact
+                    mstr = mstr.splice i, 1, '-'
+
+            for i in [0...value.length]
+
+                if mstr[i] is '-'
+                    continue
 
                 c = value[i]
 
-                if mstr[i] is c
-                    ++out.exact
-                    mstr = mstr.splice i, 1, '_'
-                else
-                    pos = mstr.indexOf c
-                    if pos isnt -1
-                        mstr = mstr.splice pos, 1, '_'
-                        ++out.present
+                pos = mstr.indexOf c
+                if pos isnt -1
+                    mstr = mstr.splice pos, 1, '-'
+                    ++out.present
 
             out
 
